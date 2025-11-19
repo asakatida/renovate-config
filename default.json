@@ -1,0 +1,160 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Shared Renovate configuration preset",
+  "extends": [
+    "config:best-practices",
+    ":dependencyDashboard",
+    ":semanticCommits",
+    ":timezone(UTC)"
+  ],
+  "schedule": [
+    "before 6am on Monday"
+  ],
+  "prConcurrentLimit": 10,
+  "prHourlyLimit": 0,
+  "branchPrefix": "renovate/",
+  "commitMessagePrefix": "chore(deps):",
+  "commitMessageAction": "update",
+  "commitMessageTopic": "{{depName}}",
+  "commitMessageExtra": "to {{#if isPinDigest}}{{{newDigestShort}}}{{else}}{{#if isMajor}}{{prettyNewMajor}}{{else}}{{#if isSingleVersion}}{{prettyNewVersion}}{{else}}{{#if newValue}}{{{newValue}}}{{else}}{{{newDigestShort}}}{{/if}}{{/if}}{{/if}}{{/if}}",
+  "labels": [
+    "dependencies"
+  ],
+  "assigneesFromCodeOwners": true,
+  "reviewersFromCodeOwners": true,
+  "separateMajorMinor": true,
+  "separateMinorPatch": false,
+  "separateMultipleMajor": true,
+  "rangeStrategy": "bump",
+  "rebaseWhen": "behind-base-branch",
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": [
+      "before 6am on the first day of the month"
+    ]
+  },
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": [
+      "security"
+    ],
+    "assignees": []
+  },
+  "packageRules": [
+    {
+      "description": "Automerge non-major updates",
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest",
+        "pin"
+      ],
+      "automerge": true,
+      "automergeType": "pr",
+      "automergeStrategy": "squash"
+    },
+    {
+      "description": "Require approval for major updates",
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "automerge": false,
+      "labels": [
+        "dependencies",
+        "major-update"
+      ]
+    },
+    {
+      "description": "Group all linter and formatter updates together",
+      "matchPackagePatterns": [
+        "^eslint",
+        "^prettier",
+        "^@typescript-eslint/",
+        "^stylelint",
+        "^ruff",
+        "^black",
+        "^isort",
+        "^flake8",
+        "^pylint",
+        "^rubocop"
+      ],
+      "groupName": "linters and formatters"
+    },
+    {
+      "description": "Group all test framework updates together",
+      "matchPackagePatterns": [
+        "^jest",
+        "^vitest",
+        "^@testing-library/",
+        "^cypress",
+        "^playwright",
+        "^pytest",
+        "^rspec"
+      ],
+      "groupName": "test frameworks"
+    },
+    {
+      "description": "Group all build tool updates together",
+      "matchPackagePatterns": [
+        "^webpack",
+        "^vite",
+        "^rollup",
+        "^esbuild",
+        "^@swc/",
+        "^babel"
+      ],
+      "groupName": "build tools"
+    },
+    {
+      "description": "Group all type definition updates together",
+      "matchPackagePatterns": [
+        "^@types/"
+      ],
+      "groupName": "type definitions",
+      "automerge": true
+    },
+    {
+      "description": "Pin digest for Docker images",
+      "matchDatasources": [
+        "docker"
+      ],
+      "pinDigests": true
+    },
+    {
+      "description": "Separate GitHub Actions updates",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "groupName": "GitHub Actions",
+      "commitMessagePrefix": "ci:",
+      "labels": [
+        "ci"
+      ]
+    },
+    {
+      "description": "Weekly security updates regardless of schedule",
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "matchCurrentVersion": "!/^0/",
+      "matchDepTypes": [
+        "dependencies",
+        "require"
+      ],
+      "matchPackagePatterns": [
+        ".*"
+      ],
+      "schedule": [
+        "at any time"
+      ],
+      "enabled": true
+    }
+  ],
+  "ignoreDeps": [],
+  "ignorePaths": [
+    "**/node_modules/**",
+    "**/vendor/**",
+    "**/__fixtures__/**",
+    "**/examples/**"
+  ]
+}
